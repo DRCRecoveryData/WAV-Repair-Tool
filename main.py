@@ -14,8 +14,7 @@ def load_encrypted_wav(input_path, offset):
 def merge_wav_files(reference_header, encrypted_data):
     return reference_header + encrypted_data
 
-def save_repaired_wav(input_path, repaired_data, riff_chunk_size, data_chunk_size):
-    output_folder = "Repaired"
+def save_repaired_wav(input_path, repaired_data, riff_chunk_size, data_chunk_size, output_folder):
     os.makedirs(output_folder, exist_ok=True)
     print(f"Attempting to save in directory: {os.path.abspath(output_folder)}")
 
@@ -54,6 +53,9 @@ def main():
 
     encrypted_wav_folder = input("Enter the path to the folder containing encrypted WAV files: ")
 
+    corrupted_files_folder = os.path.dirname(encrypted_wav_folder)
+    output_folder = os.path.join(corrupted_files_folder, "Repaired")
+
     for file in os.listdir(encrypted_wav_folder):
         print(f"Checking file: {file}")
         if is_double_extension_wav(file):
@@ -68,7 +70,7 @@ def main():
 
             repaired_wav_data = merge_wav_files(reference_header, encrypted_data)
 
-            save_repaired_wav(encrypted_wav_path, repaired_wav_data, riff_chunk_size, data_chunk_size)
+            save_repaired_wav(encrypted_wav_path, repaired_wav_data, riff_chunk_size, data_chunk_size, output_folder)
 
 if __name__ == "__main__":
     main()

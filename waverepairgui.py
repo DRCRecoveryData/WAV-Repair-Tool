@@ -1,8 +1,8 @@
 import os
 import struct
 from math import ceil
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 def cut_wav_header(input_path):
     with open(input_path, 'rb') as file:
@@ -114,7 +114,7 @@ class MainWindow(QMainWindow):
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setTextVisible(True)  # Show text on progress bar
-        self.progress_bar.setAlignment(Qt.AlignCenter)  # Center-align the text
+        self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center-align the text
         self.progress_bar.setMinimum(0)  # Set minimum value for progress bar
         self.progress_bar.setMaximum(100)  # Set maximum value for progress bar
 
@@ -139,16 +139,16 @@ class MainWindow(QMainWindow):
 
     def browse_reference(self):
         file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
+        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         file_dialog.setNameFilter("WAV files (*.wav)")
-        if file_dialog.exec_():
+        if file_dialog.exec():
             file_paths = file_dialog.selectedFiles()
             self.reference_path_edit.setText(file_paths[0])
 
     def browse_corrupt(self):
         folder_dialog = QFileDialog()
-        folder_dialog.setFileMode(QFileDialog.Directory)
-        if folder_dialog.exec_():
+        folder_dialog.setFileMode(QFileDialog.FileMode.Directory)
+        if folder_dialog.exec():
             folder_paths = folder_dialog.selectedFiles()
             self.corrupt_path_edit.setText(folder_paths[0])
 
@@ -204,4 +204,4 @@ if __name__ == "__main__":
 
     window = MainWindow()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

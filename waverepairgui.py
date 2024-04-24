@@ -1,7 +1,7 @@
 import os
 import struct
 from math import ceil
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 def cut_wav_header(input_path):
@@ -102,25 +102,19 @@ class MainWindow(QMainWindow):
         self.reference_label = QLabel("Reference WAV:")
         self.reference_path_edit = QLineEdit()
         self.reference_browse_button = QPushButton("Browse")
-        self.reference_browse_button.setStyleSheet("background-color: #007ACC; color: white;")
 
         self.corrupt_label = QLabel("Corrupted Folder:")
         self.corrupt_path_edit = QLineEdit()
         self.corrupt_browse_button = QPushButton("Browse")
-        self.corrupt_browse_button.setStyleSheet("background-color: #007ACC; color: white;")
 
         self.repair_button = QPushButton("Repair")
         self.repair_button.setStyleSheet("background-color: #007ACC; color: white;")
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setTextVisible(True)  # Show text on progress bar
-        self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center-align the text
-        self.progress_bar.setMinimum(0)  # Set minimum value for progress bar
-        self.progress_bar.setMaximum(100)  # Set maximum value for progress bar
 
         self.verbose_label = QLabel("Verbose:")
         self.verbose_text_edit = QTextEdit()
-        self.verbose_text_edit.setStyleSheet("background-color: white; color: black; border: none; border-radius: 5px; padding: 8px 16px;")
 
         layout.addWidget(self.reference_label)
         layout.addWidget(self.reference_path_edit)
@@ -178,7 +172,13 @@ if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
 
-    # Apply styles to buttons and "Browse" buttons
+    # Apply Fusion style for rounded corners
+    app.setStyle("Fusion")
+
+    # Apply the system color palette
+    app.setPalette(app.style().standardPalette())
+
+    # Apply styles to "Browse" buttons
     button_style = '''
         QPushButton {
             background-color: #007ACC;
@@ -190,14 +190,6 @@ if __name__ == "__main__":
 
         QPushButton:hover {
             background-color: #005F99;
-        }
-
-        QTextEdit {
-            background-color: white;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 16px;
         }
     '''
     app.setStyleSheet(button_style)

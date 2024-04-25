@@ -27,4 +27,4 @@ This tool is licensed under the GNU General Public License (GPL). See the LICENS
 ## References
 - [Stop/DJVU Ransomware Description on Bleeping Computer](https://www.bleepingcomputer.com/news/security/djvu-ransomware-updated-to-v91-uses-new-encryption-mode/)
 - [Python Programming Language](https://www.python.org/)
-- [PyQt5 Library](https://pypi.org/project/PyQt5/)
+- [PyQt6 Library](https://pypi.org/project/PyQt6/)

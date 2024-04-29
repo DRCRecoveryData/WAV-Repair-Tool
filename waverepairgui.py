@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("WAV Repair Tool")
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 400, 400)
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)

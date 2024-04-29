@@ -11,7 +11,7 @@ To use the tool, follow these steps:
 
 1. Download the latest release of the WAV Audio File Repair Tool from the releases page.
 2. Extract the contents of the archive to a directory on your computer.
-3. Double-click the `main.py` file to run the program.
+3. Double-click the `main.py` or `waverepairgui.py` file to run the program.
 4. Enter the path of the reference wave file and the path of the directory containing the corrupted wave files when prompted.
 5. Wait for the tool to repair the files. A progress bar will be displayed to show the status of the repair process.
 6. The repaired files will be saved to a directory named "Repaired" within the directory containing the corrupted wave files.

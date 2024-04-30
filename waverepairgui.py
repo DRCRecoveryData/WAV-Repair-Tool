@@ -42,9 +42,10 @@ def is_double_extension_wav(file_name):
     
     return second_ext.lower() == '.wav'
 
-class RepairThread(QThread):
+class Worker(QThread):
     update_progress = pyqtSignal(int)
     update_verbose = pyqtSignal(str)
+    finished = pyqtSignal()
 
     def __init__(self, reference_path, corrupted_folder):
         super().__init__()
@@ -80,11 +81,7 @@ class RepairThread(QThread):
                 self.update_progress.emit(progress)
                 self.update_verbose.emit(f"Processed file: {file}")
 
-                # Let's add a delay to simulate processing time
-                self.msleep(100)
-
-        # After processing all files, emit progress signal with 100% value
-        self.update_progress.emit(100)
+        self.finished.emit()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -155,10 +152,11 @@ class MainWindow(QMainWindow):
             return
 
         self.progress_bar.setValue(0)  # Reset progress bar to 0
-        self.repair_thread = RepairThread(reference_path, corrupted_folder)
-        self.repair_thread.update_progress.connect(self.update_progress)
-        self.repair_thread.update_verbose.connect(self.update_verbose)
-        self.repair_thread.start()
+        self.worker = Worker(reference_path, corrupted_folder)
+        self.worker.update_progress.connect(self.update_progress)
+        self.worker.update_verbose.connect(self.update_verbose)
+        self.worker.finished.connect(self.repair_finished)  # Connect finished signal
+        self.worker.start()
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)
@@ -167,6 +165,8 @@ class MainWindow(QMainWindow):
     def update_verbose(self, message):
         self.verbose_text_edit.append(message)
 
+    def repair_finished(self):
+        self.verbose_text_edit.append("Repair process completed.")
 
 if __name__ == "__main__":
     import sys

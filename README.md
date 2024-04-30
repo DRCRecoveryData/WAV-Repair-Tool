@@ -1,4 +1,6 @@
-# WAV Audio File Repair Tool for Stop/DJVU Ransomware
+# WAV Repair Tool
+
+# For Stop/DJVU Ransomware
 
 ![Screenshot from 2024-04-30 15-29-03](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)
 

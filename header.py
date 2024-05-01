@@ -33,7 +33,7 @@ def save_repaired_wav(input_path, repaired_data, riff_chunk_size, data_chunk_siz
         print(f"Attempting to save in directory: {os.path.abspath(output_folder)}")
 
         input_filename = os.path.splitext(os.path.basename(input_path))[0]
-        output_full_path = os.path.join(output_folder, f"{input_filename}_repaired.wav")
+        output_full_path = os.path.join(output_folder, f"{input_filename}.wav")
 
         header = bytearray(repaired_data[:44])
         header[4:8] = struct.pack('<I', riff_chunk_size)

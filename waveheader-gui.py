@@ -92,7 +92,7 @@ class FileRepairApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("WAV Repair Tool")
+        self.setWindowTitle("WAV Header Tool")
         self.setGeometry(100, 100, 400, 400)
 
         layout = QVBoxLayout()
@@ -103,7 +103,7 @@ class FileRepairApp(QWidget):
         self.reference_browse_button.setObjectName("browseButton")
         self.reference_browse_button.clicked.connect(self.browse_reference_file)
 
-        self.corrupted_label = QLabel("corrupted Folder:")
+        self.corrupted_label = QLabel("Corrupted Folder:")
         self.corrupted_path_edit = QLineEdit()
         self.corrupted_browse_button = QPushButton("Browse", self)
         self.corrupted_browse_button.setObjectName("browseButton")

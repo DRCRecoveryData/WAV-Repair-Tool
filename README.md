@@ -12,7 +12,7 @@ The WAV Repair Tool is a program developed by DRC Recovery that repairs WAV audi
 To use the tool:
 1. Download the latest release from the releases page.
 2. Extract the contents to a directory.
-3. Run `main.py` or `waverepairgui.py`.
+3. Run `main.py` or `waverepair-gui.py` & `waveheader-gui.py`.
 4. Enter the reference wave file path and the directory with corrupted wave files.
 5. Wait for repair completion, indicated by the progress bar.
 6. Repaired files are saved to a directory named "Repaired".

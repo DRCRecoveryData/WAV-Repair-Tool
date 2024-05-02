@@ -9,10 +9,10 @@ class FileRepairWorker(QThread):
     log_updated = pyqtSignal(str)
     repair_finished = pyqtSignal(str)
 
-    def __init__(self, reference_file_path, encrypted_folder_path):
+    def __init__(self, reference_file_path, corrupted_folder_path):
         super().__init__()
         self.reference_file_path = reference_file_path
-        self.encrypted_folder_path = encrypted_folder_path
+        self.corrupted_folder_path = corrupted_folder_path
 
     def run(self):
         reference_header = self.cut_wav_header(self.reference_file_path)
@@ -20,24 +20,24 @@ class FileRepairWorker(QThread):
             self.log_updated.emit("Error: Reference file header could not be read.")
             return
 
-        repaired_folder_path = os.path.join(self.encrypted_folder_path, "Repaired")
+        repaired_folder_path = os.path.join(self.corrupted_folder_path, "Repaired")
         os.makedirs(repaired_folder_path, exist_ok=True)
 
-        encrypted_files = glob.glob(os.path.join(self.encrypted_folder_path, '*.wav'))
+        corrupted_files = glob.glob(os.path.join(self.corrupted_folder_path, '*.wav'))
 
-        total_files = len(encrypted_files)
+        total_files = len(corrupted_files)
 
-        for i, encrypted_file in enumerate(encrypted_files):
-            file_name = os.path.basename(encrypted_file)
+        for i, corrupted_file in enumerate(corrupted_files):
+            file_name = os.path.basename(corrupted_file)
             progress_value = (i + 1) * 100 // total_files
             self.progress_updated.emit(progress_value)
             self.log_updated.emit(f"Processing {file_name}...")
 
-            corrupted_header = self.cut_wav_header(encrypted_file)
+            corrupted_header = self.cut_wav_header(corrupted_file)
             if corrupted_header is None:
                 continue
 
-            corrupted_data = self.load_corrupted_wav(encrypted_file)
+            corrupted_data = self.load_corrupted_wav(corrupted_file)
             if corrupted_data is None:
                 continue
 
@@ -46,7 +46,7 @@ class FileRepairWorker(QThread):
             riff_chunk_size = len(repaired_data) - 8
             data_chunk_size = len(repaired_data) - 44
 
-            self.save_repaired_wav(encrypted_file, repaired_data, riff_chunk_size, data_chunk_size, repaired_folder_path)
+            self.save_repaired_wav(corrupted_file, repaired_data, riff_chunk_size, data_chunk_size, repaired_folder_path)
 
         self.repair_finished.emit("Repair process complete.")
 
@@ -103,11 +103,11 @@ class FileRepairApp(QWidget):
         self.reference_browse_button.setObjectName("browseButton")
         self.reference_browse_button.clicked.connect(self.browse_reference_file)
 
-        self.encrypted_label = QLabel("Encrypted Folder:")
-        self.encrypted_path_edit = QLineEdit()
-        self.encrypted_browse_button = QPushButton("Browse", self)
-        self.encrypted_browse_button.setObjectName("browseButton")
-        self.encrypted_browse_button.clicked.connect(self.browse_encrypted_folder)
+        self.corrupted_label = QLabel("corrupted Folder:")
+        self.corrupted_path_edit = QLineEdit()
+        self.corrupted_browse_button = QPushButton("Browse", self)
+        self.corrupted_browse_button.setObjectName("browseButton")
+        self.corrupted_browse_button.clicked.connect(self.browse_corrupted_folder)
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
@@ -123,9 +123,9 @@ class FileRepairApp(QWidget):
         layout.addWidget(self.reference_label)
         layout.addWidget(self.reference_path_edit)
         layout.addWidget(self.reference_browse_button)
-        layout.addWidget(self.encrypted_label)
-        layout.addWidget(self.encrypted_path_edit)
-        layout.addWidget(self.encrypted_browse_button)
+        layout.addWidget(self.corrupted_label)
+        layout.addWidget(self.corrupted_path_edit)
+        layout.addWidget(self.corrupted_browse_button)
         layout.addWidget(self.progress_bar)
         layout.addWidget(self.log_box)
         layout.addWidget(self.repair_button)
@@ -151,23 +151,23 @@ class FileRepairApp(QWidget):
         if reference_file:
             self.reference_path_edit.setText(reference_file)
 
-    def browse_encrypted_folder(self):
-        encrypted_folder = QFileDialog.getExistingDirectory(self, "Select Encrypted Folder")
-        if encrypted_folder:
-            self.encrypted_path_edit.setText(encrypted_folder)
+    def browse_corrupted_folder(self):
+        corrupted_folder = QFileDialog.getExistingDirectory(self, "Select Corrupted Folder")
+        if corrupted_folder:
+            self.corrupted_path_edit.setText(corrupted_folder)
 
     def repair_files(self):
         reference_file_path = self.reference_path_edit.text()
-        encrypted_folder_path = self.encrypted_path_edit.text()
+        corrupted_folder_path = self.corrupted_path_edit.text()
 
         if not os.path.exists(reference_file_path):
             self.show_message("Error", "Reference file does not exist.")
             return
-        if not os.path.exists(encrypted_folder_path):
-            self.show_message("Error", "Encrypted folder does not exist.")
+        if not os.path.exists(corrupted_folder_path):
+            self.show_message("Error", "Corrupted folder does not exist.")
             return
 
-        self.worker = FileRepairWorker(reference_file_path, encrypted_folder_path)
+        self.worker = FileRepairWorker(reference_file_path, corrupted_folder_path)
         self.worker.progress_updated.connect(self.update_progress)
         self.worker.log_updated.connect(self.update_log)
         self.worker.repair_finished.connect(self.repair_finished)

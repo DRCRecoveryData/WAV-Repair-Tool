@@ -1,10 +1,11 @@
 # WAV Repair Tool
 
-## For Stop/DJVU Ransomware
+## For Stop/DJVU Ransomware & For Header Corrupted
 
-![Screenshot from 2024-04-30 15-29-03](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)
+[![Stop/DJVU Ransomware](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e) [![Header Corrupted](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)
 
 ## Overview
+
 The WAV Repair Tool is a program developed by DRC Recovery that repairs WAV audio files corrupted by the Stop/DJVU Ransomware. This ransomware encrypts various file types, including audio files, causing significant disruption and loss. This tool helps mitigate the damage by repairing the audio files, making them accessible once again.
 
 ## Usage

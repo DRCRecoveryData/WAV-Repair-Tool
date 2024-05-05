@@ -1,3 +1,9 @@
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/DRCRecoveryData/WAV-Repair-Tool)
+![GitHub Release Date](https://img.shields.io/github/release-date/DRCRecoveryData/WAV-Repair-Tool)
+![GitHub repo size](https://img.shields.io/github/repo-size/DRCRecoveryData/WAV-Repair-Tool)
+![GitHub all releases](https://img.shields.io/github/downloads/DRCRecoveryData/WAV-Repair-Tool)
+![GitHub](https://img.shields.io/github/license/DRCRecoveryData/WAV-Repair-Tool)
+
 # WAV Repair Tool
 
 [![Stop/DJVU Ransomware](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e) [![Header Corrupted](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)

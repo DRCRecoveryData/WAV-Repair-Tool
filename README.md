@@ -66,4 +66,4 @@ Licensed under the GNU General Public License (GPL). See [LICENSE](LICENSE) for 
 
 ## Contact
 
-For support or questions, please contact us at [email@example.com](mailto:hanaloginstruments@gmail.com)
+For support or questions, please contact us at [hanaloginstruments@gmail.com](mailto:hanaloginstruments@gmail.com)

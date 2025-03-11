@@ -1,9 +1,11 @@
 import sys
 import os
 import glob
+import re
 import struct
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QFileDialog, QProgressBar, QTextEdit, QMessageBox
 from PyQt6.QtCore import QThread, pyqtSignal
+
 
 class FileRepairWorker(QThread):
     progress_updated = pyqtSignal(int)
@@ -16,56 +18,37 @@ class FileRepairWorker(QThread):
         self.corrupted_folder_path = corrupted_folder_path
 
     def run(self):
-        self.log_updated.emit("🔧 Bắt đầu sửa chữa file...")
-        
+        self.log_updated.emit("🔧 Starting file repair...")
+
         # Create output folder
         repaired_folder_path = os.path.join(self.corrupted_folder_path, "Repaired")
         os.makedirs(repaired_folder_path, exist_ok=True)
-        self.log_updated.emit(f"💾 Thư mục lưu file sửa: {repaired_folder_path}")
+        self.log_updated.emit(f"💾 Repaired files will be saved in: {repaired_folder_path}")
 
-        # Get all WAV files in the corrupted folder
-        corrupted_files = glob.glob(os.path.join(self.corrupted_folder_path, '*.wav'))
+        # Get all WAV files (including .wav and .wav.****)
+        corrupted_files = [f for f in glob.glob(os.path.join(self.corrupted_folder_path, "*.wav*"))
+                           if re.match(r'.+\.wav(\..+)?$', os.path.basename(f), re.IGNORECASE)]
+
         total_files = len(corrupted_files)
-        
+
         if total_files == 0:
-            self.log_updated.emit("⚠️ Không tìm thấy file WAV nào trong thư mục!")
-            self.repair_finished.emit("Không có file để sửa.")
+            self.log_updated.emit("⚠️ No WAV files found in the folder!")
+            self.repair_finished.emit("No files to repair.")
             return
 
         for i, corrupted_file in enumerate(corrupted_files):
-            file_name = os.path.basename(corrupted_file)
-            output_path = os.path.join(repaired_folder_path, file_name)
-            
+            # Ensure output filename has only ".wav" extension
+            base_name = os.path.basename(corrupted_file).split(".wav")[0] + ".wav"
+            output_path = os.path.join(repaired_folder_path, base_name)
+
             progress_value = (i + 1) * 100 // total_files
             self.progress_updated.emit(progress_value)
-            
-            self.log_updated.emit(f"🔧 Đang sửa file: {file_name}")
-            success = self.repair_wav(self.reference_file_path, corrupted_file, output_path)
-        
-        self.log_updated.emit("✅ Hoàn tất sửa chữa!")
-        self.repair_finished.emit(f"Đã sửa xong tất cả file. Các file đã được lưu trong thư mục {repaired_folder_path}")
 
-    def get_wav_info(self, file_path):
-        try:
-            with open(file_path, 'rb') as f:
-                file_size = os.path.getsize(file_path)
-                header = f.read(44)
-                if header[:4] != b'RIFF' or header[8:12] != b'WAVE':
-                    return None
-                
-                fmt_chunk = header[20:36]
-                audio_format, num_channels, sample_rate, byte_rate, block_align, bits_per_sample = struct.unpack('<HHIIHH', fmt_chunk)
-                
-                return {
-                    'File Size': f"{file_size} bytes",
-                    'Audio Format': "PCM" if audio_format == 1 else f"Nén ({audio_format})",
-                    'Sample Rate': f"{sample_rate} Hz",
-                    'Channels': num_channels,
-                    'Bit Depth': f"{bits_per_sample}-bit"
-                }
-        except Exception as e:
-            self.log_updated.emit(f"Lỗi khi đọc file {file_path}: {str(e)}")
-            return None
+            self.log_updated.emit(f"🔧 Repairing file: {os.path.basename(corrupted_file)}")
+            success = self.repair_wav(self.reference_file_path, corrupted_file, output_path)
+
+        self.log_updated.emit("✅ Repair completed!")
+        self.repair_finished.emit(f"All files repaired. Saved in {repaired_folder_path}")
 
     def repair_wav(self, reference_path, corrupt_path, output_path):
         try:
@@ -73,47 +56,48 @@ class FileRepairWorker(QThread):
                 ref_data = ref_file.read()
             with open(corrupt_path, 'rb') as corrupt_file:
                 corrupt_data = corrupt_file.read()
-            
+
             ref_fmt_offset = ref_data.find(b'fmt ')
             ref_data_offset = ref_data.find(b'data')
-            
+
             if ref_fmt_offset == -1 or ref_data_offset == -1:
-                raise ValueError("File tham chiếu không hợp lệ.")
-            
+                raise ValueError("Invalid reference file.")
+
             corrupt_fmt_offset = corrupt_data.find(b'fmt ')
             corrupt_data_offset = corrupt_data.find(b'data')
-            
+
             fmt_offset = corrupt_fmt_offset if corrupt_fmt_offset != -1 else ref_fmt_offset
             fmt_chunk = corrupt_data[fmt_offset:fmt_offset+24] if corrupt_fmt_offset != -1 else ref_data[ref_fmt_offset:ref_fmt_offset+24]
-            
+
             if corrupt_data_offset == -1:
                 cleaned_data = ref_data[ref_data_offset + 8:]
             else:
                 cleaned_data = corrupt_data[corrupt_data_offset + 8:]
-            
+
             new_data_size = len(cleaned_data)
             new_data_chunk = b'data' + struct.pack('<I', new_data_size)
-            
+
             final_wav = ref_data[:fmt_offset] + fmt_chunk + ref_data[fmt_offset+24:ref_data_offset] + new_data_chunk + cleaned_data
-            
+
             # Update RIFF chunk size
             riff_chunk_size = len(final_wav) - 8
             final_wav = final_wav[:4] + struct.pack('<I', riff_chunk_size) + final_wav[8:]
-            
+
             with open(output_path, 'wb') as out_file:
                 out_file.write(final_wav)
-            
-            self.log_updated.emit(f"✅ Sửa thành công: {os.path.basename(output_path)}")
+
+            self.log_updated.emit(f"✅ Successfully repaired: {os.path.basename(output_path)}")
             return True
         except Exception as e:
-            self.log_updated.emit(f"❌ Lỗi khi sửa {os.path.basename(corrupt_path)}: {str(e)}")
+            self.log_updated.emit(f"❌ Error repairing {os.path.basename(corrupt_path)}: {str(e)}")
             return False
+
 
 class FileRepairApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("WAV Header Tool")
+        self.setWindowTitle("WAV Header Repair Tool")
         self.setGeometry(100, 100, 400, 400)
 
         layout = QVBoxLayout()
@@ -205,6 +189,7 @@ class FileRepairApp(QWidget):
 
     def show_message(self, title, message):
         QMessageBox.information(self, title, message)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

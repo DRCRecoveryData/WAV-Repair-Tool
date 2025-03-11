@@ -35,7 +35,7 @@ To install the WAV Repair Tool:
 
 To use the tool:
 
-1. Run `main.py` or `waverepair-gui.py` & `waveheader-gui.py`.
+1. Run `waverepair-gui.py`.
 2. Enter the reference wave file path and the directory with corrupted wave files.
 3. Wait for repair completion, indicated by the progress bar.
 4. Repaired files are saved to a directory named "Repaired".

@@ -1,6 +1,5 @@
 # WAV Repair Tool
 
-[![Stop/DJVU Ransomware](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/2651b85a-e97e-4322-b9ff-f462ed51269e)
 [![Header Corrupted](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)](https://github.com/DRCRecoveryData/WAV-Repair-Tool/assets/85211068/c03ba6af-539a-46da-8ef0-cb01d18e9c88)
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/DRCRecoveryData/WAV-Repair-Tool/build.yml)
